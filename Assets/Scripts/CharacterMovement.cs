@@ -20,7 +20,7 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        horizontalMove = Input.GetAxis("Horizontal") * runSpeed;
 
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
@@ -28,7 +28,7 @@ public class CharacterMovement : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             jump = true;
-            verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
+            verticalMove = Input.GetAxis("Vertical") * runSpeed;
             animator.SetBool("IsJumping", true);
         }
 
