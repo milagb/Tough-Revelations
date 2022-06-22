@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
@@ -5,7 +6,7 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    private float runSpeed = 40f;
+    [SerializeField] private float runSpeed = 5f;
     private bool jump = false;
     private float horizontalMove = 0f;
     private float verticalMove = 0f;
@@ -20,8 +21,8 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxis("Horizontal") * runSpeed;
-
+        horizontalMove = Input.GetAxis("Horizontal") * runSpeed * Time.deltaTime;
+        transform.position += new Vector3(horizontalMove, 0, 0);
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
@@ -32,5 +33,10 @@ public class CharacterMovement : MonoBehaviour
             animator.SetBool("IsJumping", true);
         }
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        throw new NotImplementedException();
     }
 }
