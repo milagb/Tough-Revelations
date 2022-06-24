@@ -6,32 +6,36 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    [SerializeField] private float runSpeed = 5f;
+    [SerializeField] private float runSpeed = 3f;
     private bool jump = false;
     private float horizontalMove = 0f;
     private float verticalMove = 0f;
+    private SpriteRenderer flipSpriteRenderer;
 
     public Animator animator;
 
-    void Start()
+    private void Start()
     {
-
+        flipSpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         horizontalMove = Input.GetAxis("Horizontal") * runSpeed * Time.deltaTime;
         transform.position += new Vector3(horizontalMove, 0, 0);
 
-        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        // Quando apertar para esquerda
+           // virar sprite
+           // flipSpriteRenderer.flipX = valor
 
-        if(Input.GetMouseButtonDown(0))
-        {
-            jump = true;
-            verticalMove = Input.GetAxis("Vertical") * runSpeed;
-            animator.SetBool("IsJumping", true);
-        }
+        // animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        //
+        // if(Input.GetMouseButtonDown(0))
+        // {
+        //     jump = true;
+        //     verticalMove = Input.GetAxis("Vertical") * runSpeed;
+        //     animator.SetBool("IsJumping", true);
+        // }
 
     }
 
