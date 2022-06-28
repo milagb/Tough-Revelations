@@ -9,14 +9,27 @@ public class CharacterMovement : MonoBehaviour
     public CharacterController2D controller;
     public float horizontalMove = 0f;
     public float runSpeed = 40f;
+    public bool jump = false;
+    public bool crouch = false;
+
     private void Update()
     {
+        Debug.Log("Update");
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        if (Input.GetButtonDown("Jump"))
+        {
+            jump = true;
+        }
+
+        crouch = Input.GetButton("Crouch");
+
     }
 
     private void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime,false, false);
+        Debug.LogWarning("FixedUpdate");
+        controller.Move(horizontalMove * Time.fixedDeltaTime,crouch, jump);
+        jump = false;
 
 
         // Quando apertar para esquerda
@@ -34,8 +47,5 @@ public class CharacterMovement : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        throw new NotImplementedException();
-    }
+
 }
