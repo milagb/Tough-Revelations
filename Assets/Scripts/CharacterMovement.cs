@@ -6,27 +6,22 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    [SerializeField] private float runSpeed = 3f;
-    private bool jump = false;
-    private float horizontalMove = 0f;
-    private float verticalMove = 0f;
-    private SpriteRenderer flipSpriteRenderer;
-
-    public Animator animator;
-
-    private void Start()
-    {
-        flipSpriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
+    public CharacterController2D controller;
+    public float horizontalMove = 0f;
+    public float runSpeed = 40f;
     private void Update()
     {
-        horizontalMove = Input.GetAxis("Horizontal") * runSpeed * Time.deltaTime;
-        transform.position += new Vector3(horizontalMove, 0, 0);
+        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        controller.Move(horizontalMove * Time.fixedDeltaTime,false, false);
+
 
         // Quando apertar para esquerda
-           // virar sprite
-           // flipSpriteRenderer.flipX = valor
+        // virar sprite
+        // flipSpriteRenderer.flipX = valor
 
         // animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
         //
