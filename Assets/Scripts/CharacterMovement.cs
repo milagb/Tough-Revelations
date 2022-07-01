@@ -1,27 +1,31 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    [SerializeField] private float runSpeed = 40f;
-
     public CharacterController2D controller;
 
-    private float horizontalMove = 0f;
-    private float verticalMove;
+    [SerializeField] private float coolDown = 50;
+
+    private float horizontalInput = 0f;
+    private float verticalInput;
+
+    private float dashTriggerTime;
     private bool jump = false;
     private bool crouch = false;
     private bool dash = false;
     private Vector2 dashDirection;
 
+    private void Start()
+    {
+        dashTriggerTime = -coolDown;
+    }
+
     private void Update()
     {
         //Debug.Log("Update");
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-        verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -30,7 +34,9 @@ public class CharacterMovement : MonoBehaviour
 
         crouch = Input.GetButton("Crouch");
 
-        if (Input.GetButtonDown("Dash"))
+        float dashElapsedTime = Time.time - dashTriggerTime;
+
+        if (Input.GetButtonDown("Dash") && dashElapsedTime >= coolDown)
         {
             dash = true;
         }
@@ -40,16 +46,17 @@ public class CharacterMovement : MonoBehaviour
     {
         if (dash)
         {
-            dashDirection = new Vector2(horizontalMove, verticalMove);
+            dashDirection = new Vector2(horizontalInput, verticalInput).normalized;
             controller.Dash(dashDirection);
+
+            dashTriggerTime = Time.time;
             dash = false;
+
         }
         else
         {
-            controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
+            controller.Move(horizontalInput * Time.fixedDeltaTime, crouch, jump);
             jump = false;
         }
     }
-
-
 }
