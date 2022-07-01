@@ -6,16 +6,23 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
+    [SerializeField] private float runSpeed = 40f;
+
     public CharacterController2D controller;
-    public float horizontalMove = 0f;
-    public float runSpeed = 40f;
-    public bool jump = false;
-    public bool crouch = false;
+
+    private float horizontalMove = 0f;
+    private float verticalMove;
+    private bool jump = false;
+    private bool crouch = false;
+    private bool dash = false;
+    private Vector2 dashDirection;
 
     private void Update()
     {
-        Debug.Log("Update");
+        //Debug.Log("Update");
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
+
         if (Input.GetButtonDown("Jump"))
         {
             jump = true;
@@ -23,28 +30,25 @@ public class CharacterMovement : MonoBehaviour
 
         crouch = Input.GetButton("Crouch");
 
+        if (Input.GetButtonDown("Dash"))
+        {
+            dash = true;
+        }
     }
 
     private void FixedUpdate()
     {
-        Debug.LogWarning("FixedUpdate");
-        controller.Move(horizontalMove * Time.fixedDeltaTime,crouch, jump);
-        jump = false;
-
-
-        // Quando apertar para esquerda
-        // virar sprite
-        // flipSpriteRenderer.flipX = valor
-
-        // animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-        //
-        // if(Input.GetMouseButtonDown(0))
-        // {
-        //     jump = true;
-        //     verticalMove = Input.GetAxis("Vertical") * runSpeed;
-        //     animator.SetBool("IsJumping", true);
-        // }
-
+        if (dash)
+        {
+            dashDirection = new Vector2(horizontalMove, verticalMove);
+            controller.Dash(dashDirection);
+            dash = false;
+        }
+        else
+        {
+            controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
+            jump = false;
+        }
     }
 
 
