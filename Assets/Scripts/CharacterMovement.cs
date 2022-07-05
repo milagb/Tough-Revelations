@@ -11,10 +11,14 @@ public class CharacterMovement : MonoBehaviour
     private float verticalInput;
 
     private float dashTriggerTime;
-    private bool jump = false;
-    private bool crouch = false;
-    private bool dash = false;
+    private bool jumpTrigger = false;
+    private bool crouchTrigger = false;
+    private bool dashTrigger = false;
     private Vector2 dashDirection;
+
+    [SerializeField] private Animator animator;
+
+
 
     private void Start()
     {
@@ -27,36 +31,46 @@ public class CharacterMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+        animator.SetFloat("Speed", Math.Abs(horizontalInput));
+
+
+
         if (Input.GetButtonDown("Jump"))
         {
-            jump = true;
+            jumpTrigger = true;
+            animator.SetTrigger("Jump");
+
         }
 
-        crouch = Input.GetButton("Crouch");
+        crouchTrigger = Input.GetButton("Crouch");
 
         float dashElapsedTime = Time.time - dashTriggerTime;
 
         if (Input.GetButtonDown("Dash") && dashElapsedTime >= coolDown)
         {
-            dash = true;
+            dashTrigger = true;
         }
+
+
     }
 
     private void FixedUpdate()
     {
-        if (dash)
+        if (dashTrigger)
         {
             dashDirection = new Vector2(horizontalInput, verticalInput).normalized;
             controller.Dash(dashDirection);
 
             dashTriggerTime = Time.time;
-            dash = false;
+            dashTrigger = false;
 
         }
         else
         {
-            controller.Move(horizontalInput * Time.fixedDeltaTime, crouch, jump);
-            jump = false;
+            controller.Move(horizontalInput * Time.fixedDeltaTime, crouchTrigger, jumpTrigger);
+            jumpTrigger = false;
         }
+
+        animator.SetBool("IsGrounded", controller.grounded);
     }
 }
